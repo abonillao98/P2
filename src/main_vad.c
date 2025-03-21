@@ -26,12 +26,13 @@ int main(int argc, char *argv[]) {
 
   char	*input_wav, *output_vad, *output_wav;
 
-  DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ "2.0");
+  DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ "2.0");  // Analiza linea de comandos
 
-  verbose    = args.verbose ? DEBUG_VAD : 0;
+  verbose    = args.verbose ? DEBUG_VAD : 0;  // De aqui a a la 34 se analizan los parametros
   input_wav  = args.input_wav;
   output_vad = args.output_vad;
   output_wav = args.output_wav;
+  float alpha0 = 5;
 
   if (input_wav == 0 || output_vad == 0) {
     fprintf(stderr, "%s\n", args.usage_pattern);
@@ -73,6 +74,8 @@ int main(int argc, char *argv[]) {
   frame_duration = (float) frame_size/ (float) sf_info.samplerate;
   last_state = ST_UNDEF;
 
+  // Mientras pueda leer tramas de entrada (bucle infinito). Justo al principio intenta leer y si no puede, hace break 
+
   for (t = last_t = 0; ; t++) { /* For each frame ... */
     /* End loop when file has finished (or there is an error) */
     if  ((n_read = sf_read_float(sndfile_in, buffer, frame_size)) != frame_size) break;
@@ -81,7 +84,7 @@ int main(int argc, char *argv[]) {
       /* TODO: copy all the samples into sndfile_out */
     }
 
-    state = vad(vad_data, buffer);
+    state = vad(vad_data, buffer, alpha0); //Es donde guardamos en que estado estamos. Esto lo maneja vad.c
     if (verbose & DEBUG_VAD) vad_show_state(vad_data, stdout);
 
     /* TODO: print only SILENCE and VOICE labels */

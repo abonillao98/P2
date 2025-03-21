@@ -12,9 +12,9 @@ float compute_power(const float *x, unsigned int N) {
 float compute_am(const float *x, unsigned int N) {
     float resultado = 0;
     for(int i=0;i<N;i++){
-        resultado += fabs(x[i]);
-        return resultado/N;
+        resultado += fabs(x[i]);        
     }
+    return resultado/N;
 }
 
 float compute_zcr(const float *x, unsigned int N, float fm) {
