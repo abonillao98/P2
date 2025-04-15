@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   output_vad = args.output_vad;
   output_wav = args.output_wav;
   alpha0 = strtof(args.alpha0,NULL);
-  //printf("\nValor de alpha0: %f\n", alpha0);
+  //printf("\nValor de alpha0: %f\n", alpha0);  // chivato de alpha0
 
   if (input_wav == 0 || output_vad == 0) {
     fprintf(stderr, "%s\n", args.usage_pattern);

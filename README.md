@@ -1,7 +1,7 @@
 PAV - P2: detección de actividad vocal (VAD)
 ============================================
 
-Xavi Pacheco Giménez y Alejandro Bonilla Orellana
+Autores: Xavi Pacheco Giménez y Alejandro Bonilla Orellana
 -------------------------------------------------
 
 Esta práctica se distribuye a través del repositorio GitHub [Práctica 2](https://github.com/albino-pav/P2),
@@ -139,15 +139,20 @@ Ejercicios
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
 
+![Etiquetado manual](img/Ejs_Etiquetado_Etiquete_1.png)
+
 
 - A la vista de la gráfica, indique qué valores considera adecuados para las magnitudes siguientes:
 
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
+    * <span style="color:blue">En las transiciones de silencio-voz más bruscas, se pasa de unos .30dB a -7dB aproximadamente. En otras transiciones más suaves (y duraderas) se pasa de -35dB a -18dB aproximadamente. Si nos basamos en el nivel de silencio inicial (unos -30dB) con el nivel de voz inciial (unos -7dB), el incremento en dB debería de ser de entre 20 a 27 dBs.</span>
 
 	* Duración mínima razonable de los segmentos de voz y silencio.
+	* <span style="color:blue">La duración mínima deberia de ser el intervalo de tiempo más pequeño que hay entre dos palabras distintas. En nuestro caso, este intervalo es de aproximadamente 300 milisegundos.</span>
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
+	* <span style="color:blue">La tasa de cruces por cero no parece ser de mucha ayuda, dado que parece ser alta tanto en momentos de silencio como en momentos de voz, muy probablemente para los alófonos del estilo "s" o "ss".</span>
 
 
 ### Desarrollo del detector de actividad vocal
@@ -155,14 +160,32 @@ Ejercicios
 - Complete el código de los ficheros de la práctica para implementar un detector de actividad vocal en
   tiempo real tan exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 
+<span style="color:blue">Se adapta el código para que el programa VAD pueda tomar por línea de comandos el parámetro alpha0. Se adapta el fichero "vad.c" para tomar en consideración este parámetro en el FSA. Por defecto se le establece un valor de 5.0 y así se le especifica en las opciones modificando el fichero "vad.docopt" y ejecutando en la linea de comandos lo siguiente:  *"abollao@ThinkPad-E495:~/PAV/P2/docopt_c$ python3 docopt_c.py ../src/vad.docopt -o ../src/vad_docopt.h"*</span>
+
+<span style="color:blue">De forma experimental, con el script "dale.sh" vemos que el valor óptimo de alpha0 es de 5.1. Se actualiza el valor por defecto y la descripción de las opciones.</span>
+
+<span style="color:blue">Se añaden los ficheros "pav_analysis.c" y "pav_analysis.h" para poder calcular nuestros *features* con el código implementado en la práctica 1. Con estos ficheros, se adapta el código "vad.c" para calcular la *feature* de la potencia. La usaremos para determinar si la trama es de voz o silencio. </span>
+
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
-  automática conseguida para el fichero grabado al efecto. 
+  automática conseguida para el fichero grabado al efecto.
+
+<span style="color:blue">Gráfico generado con el script "grafico_comparacion.py" </span>
+
+<span style="color:blue">**Transcripción:** *Alejandro Bonilla, Xavi Pacheco. Me he pasado todo el fin de semana resfriado, esto me pasa por ir al rugby y no hacer reposo en casa.*</span>
+
+![Grafico comparacion](img/grafico_comparacion.png)
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 
-- Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
+<span style="color:blue"> Existen discrepancias entre el etiquetado manual y la detección automática. Muy probablemente se deban a las limitaciones del FSA dado que sólo tiene dos estados. Con la implementación de más estados (*Maybe_voice* y *Maybe_silence*) junto con más parámetros de decisión, seria posible *refinar* el algoritmo para que no detecte como voz tramas que son claramente silencio (parece que detecta "picos" del ruido de fondo), ni que tampoco detecte como silencio tramas que son claramente de voz (parece que detecta momentos de voz donde hay una pausa, como la "m" de "esto Me pasa").</span>
+
+- Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
+
+<span style="color:blue"> Se modifica el script "dale.sh" (que llama al script "run_vad.sh" que a su vez llama al script "vad_evaluation.pl") para que solo haga una única iteración con alpha0 = 5.1:</span>
+
+![Summary](img/summary_evaluation.png)
 
 
 ### Trabajos de ampliación
@@ -178,10 +201,12 @@ Ejercicios
 - Si ha usado `docopt_c` para realizar la gestión de las opciones y argumentos del programa `vad`, inserte
   una captura de pantalla en la que se vea el mensaje de ayuda del programa.
 
+![Docopt](img/docopt.png)
+
 
 ### Contribuciones adicionales y/o comentarios acerca de la práctica
 
-- Indique a continuación si ha realizado algún tipo de aportación suplementaria (algoritmos de detección o 
+- Indique a continuación si ha realizado algún tipo de aportación suplementaria (algoritmos de detección o
   parámetros alternativos, etc.).
 
 - Si lo desea, puede realizar también algún comentario acerca de la realización de la práctica que

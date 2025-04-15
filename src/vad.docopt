@@ -8,7 +8,7 @@ Usage:
 Options:
    -i FILE, --input-wav=FILE   WAVE file for voice activity detection
    -o FILE, --output-vad=FILE  Label file with the result of VAD
-   -0 FLOAT, --alpha0=FLOAT  Valor de alpha0 [default: 5.0]
+   -0 FLOAT, --alpha0=FLOAT  Valor de alpha0 [default: 5.1]
    -w FILE, --output-wav=FILE  WAVE file with silences cleared
    -v, --verbose  Show debug information
    -h, --help     Show this screen
